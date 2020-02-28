@@ -7,14 +7,33 @@ all : $(TARGETS) cleanup
 
 $(STEP_1_PREREQS): 
 	$(call check_prereqs,$(STEP_1_DEPS))
-
-# TODO: Find a way to generate and link config.csh on each run.
+## this script should be step 1
+@cat > @${gen_mapping_files}/input.scrip_grid << EOF
+	  $nx $ny
+	  ${tag}
+	  ${popgridfile}
+          ${kmtgridfile}
+          ${focn}
+          1
+	EOF
+${scripdir}/grids/myconvertPOPT < input.scrip_grid
+## the above command will generate gx1v6plioenh_DATE.nc file
+### rfeng: also need to add the check - Chris can help with that
+# TODO: Find a way to generate and link config.csh on each run. 
+# This should be step 2
 $(STEP_1_TARGETS): $(STEP_1_DEPS) 
 	@$(call banner,Step One!)
 	@echo "TODO: add a way to verify nx, ny were read correctly."
 	$(call setup)
 	cd ${gen_mapping_files} && \
-	csh ${gen_mapping_files}/mk_SCRIPgridplio_enh.csh 2>&1 | tee ${log_folder}/${log_file1}
+	# replace this with a call to the script
+	@${gen_mapping_files}/create_ESMF_map.sh \
+		-fsrc ${file_roff} 
+		-nsrc ${nsrc} 
+		-fdst ${focn} 
+		-ndst ${nocn}
+		-map aave
+	#csh ${gen_mapping_files}/mk_SCRIPgridplio_enh.csh 2>&1 | tee ${log_folder}/${log_file1}
 	cd -
 	#cp ${gen_mapping_files}/${prefix}_$(DATE).nc ${output_folder}
 	cp -v $(notdir $(STEP_1_TARGETS)) ${output_folder}
