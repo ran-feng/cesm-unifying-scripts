@@ -9,6 +9,7 @@ $(STEP_1_PREREQS):
 	$(call check_prereqs,$(STEP_1_DEPS))
 
 # TODO: Find a way to generate and link config.csh on each run.
+# Chris, there were environmental variables hard coded in mk_SCRIPgridplio_enh.csh. Let's ditch the script, and run the executable here directly.
 $(STEP_1_TARGETS): $(STEP_1_DEPS) 
 	@$(call banner,Step One!)
 	@echo "TODO: add a way to verify nx, ny were read correctly."
